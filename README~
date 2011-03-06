@@ -1,0 +1,44 @@
+==TwittShell==
+Version .1
+
+An interactive command line program for posting tweets on twitter.com. 
+By Jason White for The Geek Group thegeekgroup.org
+
+==License==
+
+TwittShell is licensed under the Modified BSD License see LICENSE for more 
+details
+
+==INSTALL==
+To run TwittShell you MUST install the following Python modules
+
+	* python-oath2
+	* httplib2
+	* simplejson
+	* python-twitter
+	* setup-tools
+
+They are included in the ./dependencies folder follow their README files to 
+properly install the modules. Basically all you need to do is just run  setup.py
+ as root
+
+==Using This Script With Your Account==
+
+go to https://dev.twitter.com/apps. Click on "Register A New App" fill in the 
+required information, remembering to give it read and write access. When your 
+done you should be able to go to "Your Apps" and click on the app you registered
+. There should be some information listed on the application page copy
+"Consumer key" and "Consumer secret" then paste it into the appropriate global 
+variables listed at the top of the script, Repeat this on the "My Access Token" 
+Page with the variables access_key and access_secret. It should look something 
+like this. 
+
+<in twittshell.py lines 40-43> 
+*39*
+*40* consumer_key = '2x0h71VcEAk2dAdf886HmA'
+*41* consumer_secret = 'WWsaaEJOzCuRtUxhR2kU6LShZNyNBSufuKod91N1U'
+*42* access_key = '254290857-CrESL7rXpjMlJnaCqlTwANYS2J4dRObMbdqLTcM'
+*43* access_secret = 'voHU42UTprwkfEofwXFWtxnfUumwlxKMdAUB8fouIA'
+*44*
+
+
