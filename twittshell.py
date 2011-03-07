@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#Blah
+
 # What This Means: 
 #	You can do whatever you want with (including modify, sell, distribute 
 #	and GPL) it as long as you Give me credit for writing the program
@@ -35,6 +35,8 @@
 
 import time
 import twitter
+import sys
+import getopt
 
 
 consumer_key = '2x0h71VcEAk2dAdf886HmA'
@@ -58,7 +60,7 @@ current_timezone=(time.timezone/60)/60 # Timezone
 status_update_delay=api.MaximumHitFrequency()
 last_reply_id=0
 
-
+versionNumber = "0.1b"
 
 #------------------------------------------------------------
 #time date functions
@@ -270,26 +272,56 @@ def read_replies(): #displays latest reply and # of replies
 		time.sleep(2)
 
 #------------------------------------------------------------
+
+def usage():
+  print "\nUsage: twitshell.py [-p message_content] [-d]"
+  print "Options:\n  -h\t\tShow this help and exit\n  -v\t\tVersion information)\n  -p\t\tPost a tweet containing this content\n  -d\t\tDisplay recent replies"
+
+
+
 #its the main one ...
-def main():
-	print "\a"
-	i=1
-	while(1):
+def main(argv):
+  
+  '''Get the options list'''
+  try:
+    opts, args = getopt.getopt(argv, "hvp:d", ["help", "version"] )
+    
+  except getopt.GetoptError:
+    usage()
+    sys.exit(2)
+  
+  for opt, arg in opts:
+    if opt in ("-h", "--help"):
+      usage()
+      sys.exit(0)
+    if opt in ("-v", "--version"):
+      print "Version: " + versionNumber
+      sys.exit(0)
+    if opt in ("-p"):
+      post(arg)
+      sys.exit(0)
+    if opt in ("-d"):
+      read_replies()
+      sys.exit(0)
+    
+  
+  print "\a"
+  i=1
+  while(1):
+    if i==0:
+      break
+    if i==1:
+      banner()
+      replies()
+      i=command()
+    if i==2:
+      replies()
+      i=command()
 
-		if i==0:
-			break
-		if i==1:
-			banner()
-			replies()
-			i=command()
-		if i==2:
-			replies()
-			i=command()
-
-		if i==None:
-			print "error i is NULL"
-			i=2;
+    if i==None:
+      print "error i is NULL"
+      i=2;
 
 
 if __name__ == "__main__":
-	main()
+	main(sys.argv[1:])
