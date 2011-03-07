@@ -4,8 +4,6 @@
 #	You can do whatever you want with (including modify, sell, distribute 
 #	and GPL) it as long as you Give me credit for writing the program
 #
-#	it restricts nothing other than not giving me some credit
-#
 #  Modified BSD License
 # 
 #  Copyright (c) 2010, Jason White
@@ -57,10 +55,10 @@ message= ''
 last_deleted_message=''
 last_status = twitter.Status()
 current_timezone=(time.timezone/60)/60 # Timezone
-status_update_delay=api.MaximumHitFrequency()
+status_update_delay=0#api.MaximumHitFrequency()
 last_reply_id=0
 
-versionNumber = "0.1b"
+version_number = "0.1b"
 
 #------------------------------------------------------------
 #time date functions
@@ -75,7 +73,7 @@ def current_time():
 #------------------------------------------------------------
 #About
 def about():
-	print "Twitter Shell Version .1"
+	print "Twitter Shell Version "+version_number
 	print "	By Jason White, February 20 2011"
 	print ""
 	print "Special Thanks to:"
@@ -99,7 +97,7 @@ def about():
 #------------------------------------------------------------
 #The Banner
 def banner():
-	print "	Twitter Shell Version .1"
+	print "	Twitter Shell Version "+version_number
 	print " Because the geek shall inherit the earth"
 	print ""
 
@@ -122,7 +120,7 @@ def help():
 	print "	post - post a message to twitter"
 	print " quit - quit this program"
 	print ""
-	print "	Twitter Shell For The Geek Group"
+	print "	Twitter Shell"+version_number+"For The Geek Group"
 	print "	 By Jason White February 20 2011\n"
 
 #------------------------------------------------------------
@@ -274,53 +272,60 @@ def read_replies(): #displays latest reply and # of replies
 #------------------------------------------------------------
 
 def usage():
-  print "\nUsage: twitshell.py [-p message_content] [-d]"
-  print "Options:\n  -h\t\tShow this help and exit\n  -v\t\tVersion information)\n  -p\t\tPost a tweet containing this content\n  -d\t\tDisplay recent replies"
+	print "\nUsage: twitshell.py [-p message_content] [-d]"
+	print "Options:"
+	print "\t-h\t\tShow this help and exit"
+	print "\t-v\t\tVersion information"
+	print "\t-p [message]\tPost a tweet containing [message]"
+	print "\t-r\t\tRead(Display) recent replies"
+	print "\t-d\t\t(unimplemented in .1b) Delete your last post"
+	print "\t-d\t\t(unimplemented in .1b) Undelete your last post"
 
 
 
 #its the main one ...
 def main(argv):
   
-  '''Get the options list'''
-  try:
-    opts, args = getopt.getopt(argv, "hvp:d", ["help", "version"] )
+	'''Get the options list'''
+	try:
+		opts, args = getopt.getopt(argv, "hvp:d", ["help", "version"] )
     
-  except getopt.GetoptError:
-    usage()
-    sys.exit(2)
+	except getopt.GetoptError:
+		usage()
+		sys.exit(2)
   
-  for opt, arg in opts:
-    if opt in ("-h", "--help"):
-      usage()
-      sys.exit(0)
-    if opt in ("-v", "--version"):
-      print "Version: " + versionNumber
-      sys.exit(0)
-    if opt in ("-p"):
-      post(arg)
-      sys.exit(0)
-    if opt in ("-d"):
-      read_replies()
-      sys.exit(0)
-    
-  
-  print "\a"
-  i=1
-  while(1):
-    if i==0:
-      break
-    if i==1:
-      banner()
-      replies()
-      i=command()
-    if i==2:
-      replies()
-      i=command()
+	for opt, arg in opts:
+		if opt in ("-h", "--help"):
+			usage()
+			sys.exit(0)
+		if opt in ("-v", "--version"):
+			print "Version: " + version_number
+			sys.exit(0)
+		if opt in ("-p","--post"):
+			post(arg)
+			sys.exit(0)
+		if opt in ("-r","--read"):
+			read_replies()
+			sys.exit(0)
 
-    if i==None:
-      print "error i is NULL"
-      i=2;
+	'''Main Interactive Command Prompt'''  
+	print "\a"
+	i=1
+
+	while(1):
+		if i==0:
+			break
+		if i==1:
+			banner()
+			replies()
+			i=command()
+		if i==2:
+			replies()
+			i=command()
+
+		if i==None:
+			print "error i is NULL"
+			i=2;
 
 
 if __name__ == "__main__":
