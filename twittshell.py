@@ -31,14 +31,19 @@
 #  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#sorry I'm a C guy commands shall end with ; as long as I'm here 
+#Python: sorry I'm a C guy commands shall end with ; as long as I'm here 
+#  BatSteve: that's pretty stupid, you should be sorry about it
+#Python: your code dosn't have too, however as long as I have to use C it wreaks havoc 
+# on my code if I don't maintain such programming practices. Anyways look on the 
+# bright side python doesn't even see the semicolons's or unnecessary parentheses
+# Though I should use true and false more often in my code.
 
 import time
 import twitter
 import sys
 import getopt
 
-
+#default: python50 my test account
 consumer_key = '2x0h71VcEAk2dAdf886HmA';
 consumer_secret = 'WWsaaEJOzCuRtUxhR2kU6LShZNyNBSufuKod91N1U';
 access_key = '254290857-CrESL7rXpjMlJnaCqlTwANYS2J4dRObMbdqLTcM';
@@ -57,17 +62,18 @@ message='';
 last_deleted_message='';
 last_status = twitter.Status();
 current_timezone=(time.timezone/60)/60; # Timezone
-status_update_delay=0;#api.MaximumHitFrequency()
+status_update_delay=0;# 0 or api.MaximumHitFrequency() <- 8
 last_reply_id=0;
 
-version_number = "0.1c RC1";
+version_number = "0.1d"; #Screw it ... .20 when word block and history are in ...
+			 # I'm going with a numeric versioning system after this
 
-#printl appends linefeeds ...
+#printl appends carriage returns ...
 def printl(string):
-	print (string+"");#add char here
+	print (string+"\r");
 
 #------------------------------------------------------------
-#time date functions
+#time date functions, returns string
 def current_time_date():
 	timen=time.gmtime();
 	return str(timen[3]-current_timezone)+":"+str(timen[4])+" "+str(timen[1])+"-"+str(timen[2])+"-"+str(timen[0]);
@@ -77,10 +83,10 @@ def current_time():
 	return str(timen[3]-current_timezone)+":"+str(timen[4]);
 
 #------------------------------------------------------------
-#usage
+#usage text
 def usage():
 	printl("");
-	printl("Usage: twitshell.py [-p message_content] [-d]");
+	printl("Usage: twitshell.py [-p message_content] [-r]");
 	printl("Options:");
 	printl("	-h		Show this help and exit --help");
 	printl("	-v		Version information --version");
@@ -88,16 +94,17 @@ def usage():
 	printl("	-r		Read(and Display) recent replies --read");
 
 #------------------------------------------------------------
-#About
+#about text
 def about():
 	printl("Twitter Shell Version "+version_number);
 	printl("	By Jason White, February 20 2011");
 	printl("");
 	printl("Special Thanks to:");
 	printl("	Alphageek");
-	printl("	Quick_Ben");
+	printl("	BatSteve");# why don't you ever add yourself ?
 	printl("	maglinvinn");
 	printl("	MrTransistor");
+	printl("	Quick_Ben");
 	printl("	Sparky Projects");
 	printl("	Tmb");
 	printl("	Tysk");
@@ -111,59 +118,62 @@ def about():
 	printl("This Program is licensed under the Modified BSD license");
 	printl("	Program Copyright (C) 2011 Jason White\n");
 #------------------------------------------------------------
-#The Banner
+#banner text
 def banner():
 	printl("	Twitter Shell Version "+version_number);
 	printl(" Because the geek shall inherit the earth");
 	printl("");
 
 #------------------------------------------------------------
-#The Bad command text, this could be made into a var but its cleaner as a function
-def bad_cmd():
-	#banner()
+#bad command text
+def bad_command():
 	printl("Unknown command type ? or help for help");
 
 #------------------------------------------------------------
 #Help Me ! Text
 def help():
-	printl("Help Me ! - Commands");
+	printl("Help Me ! - Commands:");
 	printl("");
-	printl("	about - more info about this program");
-	printl("	delete - delete the last message");
-	printl("	help - printl(this help text");
-	printl("	read - read replies");
-	printl("	undelete - undelete the last post, if it was deleted");
-	printl("	post - post a message to twitter");
-	printl("	quit - quit this program");
+	printl("	[a] or about	- more info about this program");
+	printl("	[d] or delete	- delete the last message");
+	printl("	[h] or help	- this help text");
+	printl("	[r] or read	- read replies");
+	printl("	[u] or undelete	- undelete the last post, if it was deleted");
+	printl("	[p] or post	- post a message to twitter");
+	printl("	[q] or quit	- quit this program");
 	printl("");
-	printl("	Twitter Shell"+version_number+"For The Geek Group");
+	printl("	Twitter Shell "+version_number+" For The Geek Group");
 	printl("	 By Jason White February 20 2011\n");
 
 #------------------------------------------------------------
-# Gets input from the commandline
+# command: Gets input from the command line
 def command():
 	cmd=str(raw_input(current_time()+" Command >")).lower();  # make the command all lowercase for usage
 	time.sleep(status_update_delay/8);
 	printl("");
 
-	if not cmd: # command input was empty 
-		return 2; # do nothing
+	# command input was empty 
+	if not cmd:
+		return True; # ignore
 
-	if cmd=="about":
+	#display about help
+	if cmd=="about" or cmd=="a":
 		about();
-		return 2;
+		return True;
 
-	if cmd=="?" or cmd=="help":
+	#get command help
+	if cmd=="?" or cmd=="help" or cmd=="h":
 		help(); # prints help text
-		return 2;
+		return True;
 
-	if cmd=="post":
+	#post tweet
+	if cmd=="post" or cmd=="p":
 		printl("Type message, maximum 140 characters, newline to finish");
 		printl("Feel free to include you name so others know who's posting");
 		inputs=str(raw_input("> "));
-		if not 10 <= len(inputs):
+		if len(inputs) <= 10: #python_twitter wont accept it if its less than 10
 			printl("Message must be more than 10 characters");
-
+									
 			while(1):
 				i=str(raw_input("post anyways ? [Yes/No] ")).lower();
 				if i=="yes":
@@ -172,16 +182,17 @@ def command():
 				if i=="no":
 					break;
 				printl("Yes or No");
-			return 2
+			return True
 
-		if not len(inputs) <= 140:
+		if len(inputs) > 140:
 			printl("Message must be less than 140 characters");
-			return 2;
+			return True;
+
 		post(inputs);
-		return 2;
+		return True;
 
 	#deletes the last post
-	if cmd=="delete":
+	if cmd=="delete" or cmd=="d":
 		while(1):
 			i=str(raw_input("Delete you last post ? [Yes/No]")).lower();
 			if i=="yes":
@@ -190,31 +201,33 @@ def command():
 			if i=="no":
 				break;
 			printl("Please type Yes or No");
-		return 2
+		return 1;
+
 
 	#undelete's the last post if it was deleted
-	if cmd=="undelete":
+	if cmd=="undelete" or cmd=="u":
 		undelete();
-		return 2;
+		return True;
 		
 	#read command
-	if cmd=="read" or cmd=="view":
+	if cmd=="read" or cmd=="view" or cmd=="r":
 		read_replies();
-		return 2;
+		return True;
 
 
 	#exit command
-	if cmd=="exit" or cmd=="quit":
+	if cmd=="exit" or cmd=="quit" or cmd=="q":
 		q=str(raw_input("Really [Yes/No]\a")).lower();
+
 		if q=="y" or q=="yes":
 			printl("Goodbye");
-			return 0;
+			return False;
 		else:
 			printl("Thank You");
-			return 2;
+			return True;
 	
-	bad_cmd();
-	return 2;
+	bad_command(); #it wasn't a recognized command
+	return True;
 
 #------------------------------------------------------------
 #posts to twitter, prompts for deletion to allow the user to remove mistakes
@@ -234,9 +247,9 @@ def post(message):
 		printl("Try explicitly specifying the encoding with the --encoding flag");
 		sys.exit(2);
 
-	limit=api.GetRateLimitStatus();
 	printl(last.user.name+" just posted: "+last.text);
-	#printl(str(limit.get('remaining_hits'))+" posts until limit is reached"); # I'm unsure if this really works ....
+	#limit=api.GetRateLimitStatus(); # I'm unsure if this really works ....
+	#printl(str(limit.get('remaining_hits'))+" posts until limit is reached");
 	#printl("This Resets At: "+str(limit.get('reset_time')));
 	#printl("Hourly Limit: "+str(limit.get('hourly_limit')));
 	time.sleep(status_update_delay/8);
@@ -262,29 +275,28 @@ def undelete():
 #------------------------------------------------------------
 #get replies
 
-def replies(): #displays latest reply and # of replies
+def replies(): #displays # of replies
 	global last_reply_id;
 	reply=api.GetReplies(None,last_reply_id);
-	i=len(reply)-1;
 	printl(str(len(reply))+" New Replies: Type 'read' to read the replies");
 
-def read_replies(): #displays latest reply and # of replies
+def read_replies(): #displays latest replies
 	global last_reply_id;
 
-	reply=api.GetReplies(None,last_reply_id); #download replies every view of a reply
-	i=len(reply)-1;
+	reply_list=api.GetReplies(None,last_reply_id); #download replies every view of a reply
 	
-	while 1:
-		if i==-1:
-			break;
+	reply_list.reverse();
+	
+	for reply in reply_list:
 
-		last_reply_id=reply[i].id;
-
-		printl("    "+reply[i].user.screen_name+" said: "+reply[i].text);
-		printl("In reply to "+reply[i].in_reply_to_screen_name+": "+api.GetStatus(reply[i].in_reply_to_status_id).text+"\n");
-
-		reply=api.GetReplies(None,last_reply_id); #download replies every view of a reply
-		i=len(reply)-1;
+		printl("    "+reply.user.screen_name+" said: "+reply.text);
+		
+		if reply.in_reply_to_status_id != None:
+			printl("In reply to "+reply.in_reply_to_screen_name+":"+api.GetStatus(reply.in_reply_to_status_id).text+"\n");
+		else:
+			printl("In reply to no one ?\n");
+		
+		last_reply_id=reply.id;
 		
 		time.sleep(2);
 
@@ -294,7 +306,7 @@ def main(argv):
   
 	'''Get the options list'''
 	try:
-		opts, args = getopt.getopt(argv, "hvrp:", ["help", "version","read","post"] );
+		opts, args = getopt.getopt(argv, "hvrp:", ["help", "version","read","post="] );
     
 	except getopt.GetoptError:
 		usage();
@@ -316,21 +328,15 @@ def main(argv):
 
 	'''Main Interactive Command Prompt'''  
 	printl("\a");
-	i=1;
+	loop_forever = True; #you can blame _python_ _coding_ style for this one  
+	first_start = True;
 
-	while(1):
-		if i==0:
-			break;
-		if i==1:
+	while(loop_forever):
+		if first_start:
 			banner();
-			replies();
-			i=command();
-		if i==2:
-			replies();
-			i=command();
-
-		printl("error i is:"+str(i)+" setting i to 2");
-		i=2;
+			first_start = False;
+		replies();
+		loop_forever = command();
 
 
 if __name__ == "__main__":
