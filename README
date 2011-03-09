@@ -1,5 +1,5 @@
 ==TwittShell==
-Version .1*
+Version .1c RC1
 
 An interactive command line program for posting tweets on twitter.com. 
 By Jason White for The Geek Group thegeekgroup.org
@@ -34,11 +34,9 @@ Page with the variables access_key and access_secret. It should look something
 like this. 
 
 <in twittshell.py lines 40-43> 
-*39*
 *40* consumer_key = '2x0h71VcEAk2dAdf886HmA'
 *41* consumer_secret = 'WWsaaEJOzCuRtUxhR2kU6LShZNyNBSufuKod91N1U'
 *42* access_key = '254290857-CrESL7rXpjMlJnaCqlTwANYS2J4dRObMbdqLTcM'
 *43* access_secret = 'voHU42UTprwkfEofwXFWtxnfUumwlxKMdAUB8fouIA'
-*44*
 
 
