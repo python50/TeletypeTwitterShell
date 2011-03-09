@@ -65,21 +65,12 @@ current_timezone=(time.timezone/60)/60; # Timezone
 status_update_delay=0;# 0 or api.MaximumHitFrequency() <- 8
 last_reply_id=0;
 
-version_number = "0.14"; #Screw it ... .20 when word block and history are in ...
+version_number = "0.14";
 
+#------------------------------------------------------------
 #printl appends carriage returns ...
 def printl(string):
 	print (string+"\r");
-
-#------------------------------------------------------------
-#time date functions, returns string
-def current_time_date():
-	timen=time.gmtime();
-	return str(timen[3]-current_timezone)+":"+str(timen[4])+" "+str(timen[1])+"-"+str(timen[2])+"-"+str(timen[0]);
-
-def current_time():
-	timen=time.gmtime();
-	return str(timen[3]-current_timezone)+":"+str(timen[4]);
 
 #------------------------------------------------------------
 #usage text
@@ -145,6 +136,16 @@ def help():
 	printl("	 By Jason White February 20 2011\n");
 
 #------------------------------------------------------------
+#time date functions, returns string
+def current_time_date():
+	timen=time.gmtime();
+	return str(timen[3]-current_timezone)+":"+str(timen[4])+" "+str(timen[1])+"-"+str(timen[2])+"-"+str(timen[0]);
+
+def current_time():
+	timen=time.gmtime();
+	return str(timen[3]-current_timezone)+":"+str(timen[4]);
+
+#------------------------------------------------------------
 # command: Gets input from the command line
 def command():
 	cmd=str(raw_input(current_time()+" Command >")).lower();  # make the command all lowercase for usage
@@ -195,9 +196,9 @@ def command():
 		while(1):
 			i=str(raw_input("Delete you last post ? [Yes/No]")).lower();
 			if i=="yes":
-				if last_status!=None
+				if last_status!=None:
 					delete(last_status);
-				else
+				else:
 					printl("You must post before you can delete your post !");
 				break;
 			if i=="no":
@@ -261,12 +262,15 @@ def post(message):
 #------------------------------------------------------------
 #destroy the last post
 def delete(status):
-	global last_deleted_message;
-	last_deleted_message=status.text;
-	api.DestroyStatus(status.id);
-	printl("Processing ...");
-	time.sleep(status_update_delay/4);
-	printl("Last Post Deleted");
+	if status!=None:
+		global last_deleted_message;
+		last_deleted_message=status.text;
+		api.DestroyStatus(status.id);
+		printl("Processing ...");
+		time.sleep(status_update_delay/4);
+		printl("Last Post Deleted");
+	else:
+		printl("error in delete: status is "+str(status));
 
 def undelete():
 	global last_deleted_message;
@@ -330,7 +334,7 @@ def main(argv):
 
 	'''Main Interactive Command Prompt'''  
 	printl("\a");
-	loop_forever = True; #you can blame _python_ _coding_ style for this one  
+	loop_forever = True;
 	first_start = True;
 
 	while(loop_forever):
