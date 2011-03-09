@@ -60,13 +60,12 @@ api = twitter.Api(consumer_key=consumer_key, consumer_secret=consumer_secret,
 
 message='';
 last_deleted_message='';
-last_status = twitter.Status();
+last_status = None; #twitter.Status();
 current_timezone=(time.timezone/60)/60; # Timezone
 status_update_delay=0;# 0 or api.MaximumHitFrequency() <- 8
 last_reply_id=0;
 
-version_number = "0.1d"; #Screw it ... .20 when word block and history are in ...
-			 # I'm going with a numeric versioning system after this
+version_number = "0.14"; #Screw it ... .20 when word block and history are in ...
 
 #printl appends carriage returns ...
 def printl(string):
@@ -196,7 +195,10 @@ def command():
 		while(1):
 			i=str(raw_input("Delete you last post ? [Yes/No]")).lower();
 			if i=="yes":
-				delete(last_status);
+				if last_status!=None
+					delete(last_status);
+				else
+					printl("You must post before you can delete your post !");
 				break;
 			if i=="no":
 				break;
